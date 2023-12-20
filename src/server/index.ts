@@ -1,12 +1,12 @@
-const Koa = require('koa')
-const Router = require('@koa/router')
+import Koa, { DefaultState, DefaultContext, Context, Next } from "koa"
+import Router from "@koa/router"
 
-const app = new Koa()
-const router = new Router()
+const app: Koa<DefaultState, DefaultContext> = new Koa()
+const router: Router<DefaultState, DefaultContext> = new Router()
 
-const port = 30072
+const port: number = 30072
 
-router.get('/', (ctx, next) => {
+router.get('/', (ctx: Context, next: Next) => {
   // ctx.router available
 })
 

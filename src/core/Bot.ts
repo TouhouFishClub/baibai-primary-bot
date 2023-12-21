@@ -1,18 +1,43 @@
-import WebSocket from 'ws';
+import WebSocket, { RawData } from 'ws'
 
-interface BotConfig {
-  endPoint: string,
-
+export interface BotConfig {
+  name?: string,
+  endpoint: string
 }
 
-class Bot {
+export default class Bot {
   private config: BotConfig
-  constructor(BotConfig: BotConfig) {
-    this.config = BotConfig
-  }
-  init() {
+  private wsClient: WebSocket | null
 
+  constructor(config: BotConfig) {
+    this.config = config
+    this.wsClient = null
+  }
+
+  init(): void {
+    this.wsClient = new WebSocket(this.config.endpoint)
+
+    this.wsClient.on('open', () => {
+      console.log(`[${this.config.name || 'UNKNOWN'}] WebSocket connected ${this.config.endpoint}`)
+
+      this.wsClient?.on('message', (data: RawData) => {
+        console.log('Received message:', data.toString())
+      })
+    })
+
+    this.wsClient.on('close', () => {
+      console.log('WebSocket disconnected')
+    })
+
+    this.wsClient.on('error', (error) => {
+      console.error('WebSocket error:', error)
+    })
+  }
+
+  stop(): void {
+    if (this.wsClient) {
+      this.wsClient.removeAllListeners()
+      this.wsClient.close()
+    }
   }
 }
-
-module.exports = { Bot };

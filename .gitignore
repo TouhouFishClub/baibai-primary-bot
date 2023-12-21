@@ -6,3 +6,4 @@ node_modules/
 
 .secret.js
 .secret.json
+.servers.json

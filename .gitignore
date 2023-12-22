@@ -3,6 +3,8 @@
 .DS_Store
 npm-debug.log
 node_modules/
+test/
+mock/
 
 .secret.js
 .secret.json

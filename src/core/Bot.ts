@@ -9,7 +9,7 @@ export interface BotConfig {
 export default class Bot {
   private config: BotConfig
   private wsClient: WebSocket | null
-  private plugins: Plugin[] | null
+  private plugins: Plugin[] | null = []
 
   constructor(config: BotConfig) {
     this.config = config
@@ -37,9 +37,6 @@ export default class Bot {
             break
           default:
         }
-        // this.plugins?.forEach(plugin => {
-        //   console.log(plugin.name)
-        // })
       })
     })
 
@@ -77,7 +74,7 @@ export default class Bot {
   }
 
   installPlugins(...plugins: Plugin[]) {
-    this.plugins = plugins
+    this.plugins = this.plugins.concat(...plugins)
     return this
   }
 

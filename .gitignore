@@ -8,4 +8,5 @@ mock/
 
 .secret.js
 .secret.json
-.servers.json
+
+.servers.yaml

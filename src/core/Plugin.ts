@@ -1,9 +1,4 @@
-import Bot from '@baibai/core/Bot'
-
-export interface Rule {
-  type: 'string' | 'regex'
-  pattern: string | RegExp
-}
+export type Rule = string | RegExp
 
 export default class Plugin {
   public name: string
@@ -15,11 +10,11 @@ export default class Plugin {
   }
 
   process(context: any) {
-    return this.rule.find((r) => {
-      if (r.type === 'string' && typeof r.pattern === 'string') {
-        return context === r.pattern
-      } else if (r.type === 'regex' && r.pattern instanceof RegExp) {
-        return r.pattern.test(context)
+    return this.rule.find((pattern) => {
+      if (typeof pattern === 'string') {
+        return context === pattern
+      } else if (pattern instanceof RegExp) {
+        return pattern.test(context)
       }
       return false
     })

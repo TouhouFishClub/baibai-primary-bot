@@ -11,7 +11,7 @@ const packageObj = parse(fs.readFileSync(path.join(__dirname, '../secrets/.serve
 packageObj.forEach(config => {
   new Bot(config)
     .installPlugins(
-      new HelloWorld('hello', [{ type: "string", pattern: 'hello' }])
+      new HelloWorld('hello', ['hello'])
     )
     .init()
 })

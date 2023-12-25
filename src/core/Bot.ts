@@ -37,9 +37,9 @@ export default class Bot {
             break
           default:
         }
-        this.plugins?.forEach(plugin => {
-          console.log(plugin.name)
-        })
+        // this.plugins?.forEach(plugin => {
+        //   console.log(plugin.name)
+        // })
       })
     })
 
@@ -65,15 +65,20 @@ export default class Bot {
           raw_message
         } = raw
         console.log(`[${this.bot_name}][${group_id}][${card || nickname}(${user_id})]: ${raw_message}`)
+        this.plugins?.forEach(async plugin => {
+          // console.log(plugin.name, plugin.process(raw_message))
+          if(plugin.process(raw_message)) {
+            const res = await plugin.customMethod(raw_message)
+            console.log(`[will send] ${res}`)
+          }
+        })
         break
     }
   }
 
-  installPlugin(plugins: Plugin[]) {
-    this.plugins = plugins.map(plugin => {
-      plugin.injectBot(this)
-      return plugin
-    })
+  installPlugins(...plugins: Plugin[]) {
+    this.plugins = plugins
+    return this
   }
 
   stop() {

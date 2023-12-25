@@ -1,8 +1,12 @@
-const HelloWorld = (context: string): string  => {
-  if(context === 'hello')
-    return 'world'
-}
+import Plugin, { Rule } from '@baibai/core/Plugin'
 
-module.exports = {
-  HelloWorld
+export class HelloWorld extends Plugin {
+  constructor(name: string, rule: Rule[]) {
+    super(name, rule);
+  }
+  customMethod(context: any) {
+    if(context === 'hello') {
+      return 'world'
+    }
+  }
 }

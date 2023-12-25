@@ -65,7 +65,7 @@ export default class Bot {
         this.plugins?.forEach(async plugin => {
           // console.log(plugin.name, plugin.process(raw_message))
           if(plugin.process(raw_message)) {
-            const res = await plugin.customMethod(raw_message)
+            const res = await plugin.entry(raw_message)
             console.log(`[will send] ${res}`)
           }
         })

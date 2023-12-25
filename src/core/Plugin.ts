@@ -20,7 +20,7 @@ export default class Plugin {
     })
   }
 
-  customMethod(context: any) {
+  entry(context: any) {
 
   }
 }

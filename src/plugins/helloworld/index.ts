@@ -1,10 +1,12 @@
 import Plugin, { Rule } from '@baibai/core/Plugin'
 
 export class HelloWorld extends Plugin {
-  constructor(name: string, rule: Rule[]) {
+  constructor() {
+    const name = 'HelloWorld'
+    const rule = ['hello']
     super(name, rule);
   }
-  customMethod(context: any) {
+  entry(context: any) {
     if(context === 'hello') {
       return 'world'
     }

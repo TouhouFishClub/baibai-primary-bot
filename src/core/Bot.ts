@@ -27,13 +27,15 @@ export default class Bot {
     const pluginFolders = fs.readdirSync(pluginsDir);
 
     pluginFolders.forEach((folderName) => {
-      const pluginPath = path.join(pluginsDir, folderName, 'index.ts');
-      try {
-        const Plugin = require(pluginPath).default
-        const pluginInstance = new Plugin()
-        this.installPlugins(pluginInstance)
-      } catch (error) {
-        console.error(`Error loading plugin from ${pluginPath}:`, error)
+      const pluginPath = path.join(pluginsDir, folderName, 'index.ts')
+      if(fs.existsSync(pluginPath)) {
+        try {
+          const Plugin = require(pluginPath).default
+          const pluginInstance = new Plugin()
+          this.installPlugins(pluginInstance)
+        } catch (error) {
+          console.error(`Error loading plugin from ${pluginPath}:`, error)
+        }
       }
     })
   }

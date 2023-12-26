@@ -1,3 +1,5 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import WebSocket, { RawData } from 'ws'
 import Plugin from '@baibai/core/Plugin'
 
@@ -20,7 +22,25 @@ export default class Bot {
     return this.config.name || "UNKNOWN"
   }
 
+  autoLoadPlugins() {
+    const pluginsDir = path.join(__dirname, '../plugins')
+    const pluginFolders = fs.readdirSync(pluginsDir);
+
+    pluginFolders.forEach((folderName) => {
+      const pluginPath = path.join(pluginsDir, folderName, 'index.ts');
+      try {
+        const Plugin = require(pluginPath).default
+        const pluginInstance = new Plugin()
+        this.installPlugins(pluginInstance)
+      } catch (error) {
+        console.error(`Error loading plugin from ${pluginPath}:`, error)
+      }
+    })
+  }
+
   init() {
+    this.autoLoadPlugins()
+
     this.wsClient = new WebSocket(this.config.endpoint)
 
     this.wsClient.on('open', () => {

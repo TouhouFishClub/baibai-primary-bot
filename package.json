@@ -25,6 +25,9 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
+  "engines": {
+    "node": ">= 20.0.0"
+  },
   "_moduleAliases": {
     "@root": ".",
     "@baibai": "src"

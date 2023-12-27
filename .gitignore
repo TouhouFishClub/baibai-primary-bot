@@ -5,6 +5,7 @@ npm-debug.log
 node_modules/
 test/
 mock/
+dest/
 
 .secret.js
 .secret.json

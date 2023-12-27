@@ -1,9 +1,21 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
+    "target": "es2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "rootDir": "./src",
+    "outDir": "./dest",
+    "strict": true,
     "paths": {
       "@baibai/*": ["src/*"]
     },
     "esModuleInterop": true
-  }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "files": [
+    "./src/app.ts"
+  ]
 }

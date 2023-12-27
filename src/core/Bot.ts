@@ -11,7 +11,7 @@ export interface BotConfig {
 export default class Bot {
   private config: BotConfig
   private wsClient: WebSocket | null
-  private plugins: Plugin[] | null = []
+  private plugins: Plugin[] = []
 
   constructor(config: BotConfig) {
     this.config = config
@@ -22,7 +22,7 @@ export default class Bot {
     return this.config.name || "UNKNOWN"
   }
 
-  autoLoadPlugins() {
+  private autoLoadPlugins() {
     const pluginsDir = path.join(__dirname, '../plugins')
     const pluginFolders = fs.readdirSync(pluginsDir);
 
@@ -71,7 +71,7 @@ export default class Bot {
     })
   }
 
-  private handleMsg(raw) {
+  private handleMsg(raw: any) {
     const { message_type } = raw
     switch(message_type) {
       case "private":

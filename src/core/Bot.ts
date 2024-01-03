@@ -61,16 +61,7 @@ export default class Bot {
       console.log(`[${this.bot_name}] ${this.config.receive.url} 开始接收消息`)
       this.wsClient?.on('message', (raw: RawData) => {
         // console.log('Received message:', raw.toString())
-        const data = JSON.parse(raw.toString()), { post_type } = data
-        switch(post_type) {
-          case "meta_event":
-            // 暂时不处理 meta event
-            break
-          case "message":
-            this.handleMsg(data)
-            break
-          default:
-        }
+        this.handleRawData(raw)
       })
     })
 
@@ -81,6 +72,20 @@ export default class Bot {
     this.wsClient.on('error', (error) => {
       console.log(`[${this.bot_name}] ERROR: ${error}`)
     })
+  }
+
+  private handleRawData(raw: RawData) {
+    const data = JSON.parse(raw.toString()), { post_type } = data;
+    switch (post_type) {
+      case "meta_event":
+        // 暂时不处理 meta event
+        break;
+      case "message":
+        this.handleMsg(data);
+        break;
+      default:
+      // 可以添加一些默认的处理逻辑或日志记录
+    }
   }
 
   private handleMsg(raw: any) {

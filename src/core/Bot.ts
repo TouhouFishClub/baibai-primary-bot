@@ -3,9 +3,17 @@ import path from 'node:path'
 import WebSocket, { RawData } from 'ws'
 import Plugin from '@baibai/core/Plugin'
 
+type BotMethodType = 'ws' | 'reverse_ws' | 'http'
+
+interface CommunicationConfig {
+  method: BotMethodType;  // 正向ws、反向ws或http
+  url: string;     // 端点URL
+}
+
 export interface BotConfig {
-  name?: string,
-  endpoint: string
+  name?: string;
+  receive: CommunicationConfig;  // 接收信息的配置
+  send: CommunicationConfig;    // 发送信息的配置
 }
 
 export default class Bot {
@@ -20,6 +28,11 @@ export default class Bot {
 
   get bot_name() {
     return this.config.name || "UNKNOWN"
+  }
+
+  installPlugins(...plugins: Plugin[]) {
+    this.plugins = this.plugins.concat(...plugins)
+    return this
   }
 
   private autoLoadPlugins() {
@@ -40,13 +53,12 @@ export default class Bot {
     })
   }
 
-  init() {
-    this.autoLoadPlugins()
-
-    this.wsClient = new WebSocket(this.config.endpoint)
+  // 正向WebSocket连接
+  private setupWSClient() {
+    this.wsClient = new WebSocket(this.config.receive.url)
 
     this.wsClient.on('open', () => {
-      console.log(`[${this.bot_name}] ${this.config.endpoint} 开始接收消息`)
+      console.log(`[${this.bot_name}] ${this.config.receive.url} 开始接收消息`)
       this.wsClient?.on('message', (raw: RawData) => {
         // console.log('Received message:', raw.toString())
         const data = JSON.parse(raw.toString()), { post_type } = data
@@ -95,9 +107,22 @@ export default class Bot {
     }
   }
 
-  installPlugins(...plugins: Plugin[]) {
-    this.plugins = this.plugins.concat(...plugins)
-    return this
+  init() {
+    this.autoLoadPlugins()
+    // 根据不同的方法来初始化接收服务
+    switch (this.config.receive.method) {
+      case 'ws':
+        // 正向WebSocket连接
+        this.setupWSClient()
+        break
+      case 'reverse_ws':
+        // 反向WebSocket连接
+        //TODO: 你可能需要设置一个服务器来监听客户端的连接
+        console.log(`[${this.bot_name}] 使用反向WebSocket (reverse ws) 尚未实现。`)
+        break
+      default:
+        console.error(`[${this.bot_name}] 未知的接收方法: ${this.config.receive.method}`)
+    }
   }
 
   stop() {

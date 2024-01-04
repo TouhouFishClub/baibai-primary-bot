@@ -103,7 +103,7 @@ export default class Bot {
         console.log(`[${this.bot_name}][${group_id}][${card || nickname}(${user_id})]: ${raw_message}`)
         this.plugins?.forEach(async plugin => {
           // console.log(plugin.name, plugin.process(raw_message))
-          if(plugin.process(raw_message)) {
+          if(plugin.process(raw_message) && plugin.isAllowed(group_id)) {
             const res = await plugin.entry(raw_message)
             console.log(`[will send] ${res}`)
           }

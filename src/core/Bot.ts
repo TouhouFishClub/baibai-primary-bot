@@ -60,7 +60,7 @@ export default class Bot {
     this.wsClient.on('open', () => {
       console.log(`[${this.bot_name}] ${this.config.receive.url} 开始接收消息`)
       this.wsClient?.on('message', (raw: RawData) => {
-        // console.log('Received message:', raw.toString())
+        // console.log('\n\nReceived message:', raw.toString())
         this.handleRawData(raw)
       })
     })

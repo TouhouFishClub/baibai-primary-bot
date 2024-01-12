@@ -75,21 +75,21 @@ export default class Bot {
   }
 
   private handleRawData(raw: RawData) {
-    const data = JSON.parse(raw.toString()), { post_type } = data;
+    const data: ActionRequest = JSON.parse(raw.toString()), { post_type } = data;
     switch (post_type) {
       case "meta_event":
         // 暂时不处理 meta event
         break;
       case "message":
-        this.handleMsg(data);
+        this.handleMsg(data as Message);
         break;
       default:
       // 可以添加一些默认的处理逻辑或日志记录
     }
   }
 
-  private handleMsg(raw: any) {
-    const { message_type } = raw
+  private handleMsg(request: Message) {
+    const { message_type } = request
     switch(message_type) {
       case "private":
         // 暂时不接入私聊
@@ -99,7 +99,7 @@ export default class Bot {
           group_id,
           sender: { nickname, card, user_id },
           raw_message
-        } = raw
+        } = request
         console.log(`[${this.bot_name}][${group_id}][${card || nickname}(${user_id})]: ${raw_message}`)
         this.plugins?.forEach(async plugin => {
           // console.log(plugin.name, plugin.process(raw_message))

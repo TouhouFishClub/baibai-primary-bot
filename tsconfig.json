@@ -8,7 +8,8 @@
     "outDir": "./dest",
     "strict": true,
     "paths": {
-      "@baibai/*": ["src/*"]
+      "@baibai/*": ["src/*"],
+      "typeRoots": ["./node_modules/@types", "./types"]
     },
     "esModuleInterop": true
   },
@@ -16,6 +17,7 @@
     "src/**/*"
   ],
   "files": [
-    "./src/app.ts"
+    "./src/app.ts",
+    "types/onebot.d.ts"
   ]
 }

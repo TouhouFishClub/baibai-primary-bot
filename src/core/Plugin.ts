@@ -1,6 +1,6 @@
 export type Rule = string | RegExp
 
-export default class Plugin {
+export default abstract class Plugin {
   public name: string
   protected rule: Rule[]
   protected whitelist: number[] = []
@@ -41,7 +41,5 @@ export default class Plugin {
     })
   }
 
-  entry(context: any) {
-
-  }
+  abstract entry(context: any) : Promise<string | MessageSegment[]>
 }

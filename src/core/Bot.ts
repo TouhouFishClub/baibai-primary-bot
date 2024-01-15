@@ -3,17 +3,20 @@ import path from 'node:path'
 import WebSocket, { RawData } from 'ws'
 import Plugin from '@baibai/core/Plugin'
 
-type BotMethodType = 'ws' | 'reverse_ws' | 'http'
-
-interface CommunicationConfig {
-  method: BotMethodType;  // 正向ws、反向ws或http
+interface ReceiveConfig {
+  method: 'ws' | 'reverse_ws';  // 正向ws、反向ws
   url: string;     // 端点URL
+}
+
+interface SendConfig {
+  method: 'http' | 'same';  // http 或者与接收方一致
+  url?: string;     // 端点URL
 }
 
 export interface BotConfig {
   name?: string;
-  receive: CommunicationConfig;  // 接收信息的配置
-  send: CommunicationConfig;    // 发送信息的配置
+  receive: ReceiveConfig;  // 接收信息的配置
+  send: SendConfig;    // 发送信息的配置
 }
 
 export default class Bot {
@@ -106,8 +109,26 @@ export default class Bot {
           if(plugin.process(raw_message) && plugin.isAllowed(group_id)) {
             const res = await plugin.entry(raw_message)
             console.log(`[will send] ${res}`)
+            this.sendMsg(res)
           }
         })
+        break
+    }
+  }
+
+  private sendMsg(msg: string | MessageSegment[]) {
+    let sendMsg: MessageSegment[] = []
+    if(typeof msg === 'string') {
+      sendMsg = [{ type: 'text', data: { text: msg } }]
+    } else {
+      sendMsg = msg
+    }
+    switch(this.config.send.method){
+      case 'http':
+        // http发送
+        break
+      case 'same':
+        // 与接受方式一致
         break
     }
   }

@@ -109,7 +109,7 @@ export default class Bot {
           if(plugin.process(raw_message) && plugin.isAllowed(group_id)) {
             const res = await plugin.entry(raw_message)
             console.log(`[will send] ${res}`)
-            this.sendMsg(res)
+            // this.sendMsg(res)
           }
         })
         break

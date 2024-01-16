@@ -41,5 +41,5 @@ export default abstract class Plugin {
     })
   }
 
-  abstract entry(context: any) : Promise<string | MessageSegment[]>
+  abstract entry(context: any) : string | MessageSegment[] | Promise<string | MessageSegment[]>
 }

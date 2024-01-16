@@ -8,9 +8,9 @@
     "outDir": "./dest",
     "strict": true,
     "paths": {
-      "@baibai/*": ["src/*"],
-      "typeRoots": ["./node_modules/@types", "./types"]
+      "@baibai/*": ["src/*"]
     },
+    "typeRoots": ["./node_modules/@types", "./types"],
     "esModuleInterop": true
   },
   "include": [
@@ -19,5 +19,8 @@
   "files": [
     "./src/app.ts",
     "types/onebot.d.ts"
-  ]
+  ],
+  "ts-node": {
+    "files": true
+  }
 }

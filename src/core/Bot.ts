@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import WebSocket, { RawData } from 'ws'
 import Plugin from '@baibai/core/Plugin'
+import { messageSegmentsToString, stringToMessageSegments } from '@baibai/utils/msgTranslate'
 
 interface ReceiveConfig {
   method: 'ws' | 'reverse_ws';  // 正向ws、反向ws
@@ -91,8 +92,12 @@ export default class Bot {
     }
   }
 
-  private handleMsg(request: Message) {
-    const { message_type } = request
+  private handleMsg(message: Message) {
+    // if(this.bot_name === "PORT-30005") {
+    //   console.log(`====\n\nmessage:\n${JSON.stringify(message.message, null, 2)}\n\nraw_message:\n${message.raw_message}\n\nmessageSegmentsToString(${message.raw_message == messageSegmentsToString(message.message as MessageSegment[]) ? '\x1b[32mTRUE\x1b[0m' : '\x1b[31mFALSE\x1b[0m'}):\n${messageSegmentsToString(message.message as MessageSegment[])}\n\nstringToMessageSegments(${JSON.stringify(message.message) == JSON.stringify(stringToMessageSegments(message.raw_message)) ? '\x1b[32mTRUE\x1b[0m' : '\x1b[31mFALSE\x1b[0m'}):\n${JSON.stringify(stringToMessageSegments(message.raw_message), null, 2)}\n\n====`)
+    // }
+
+    const { message_type } = message
     switch(message_type) {
       case "private":
         // 暂时不接入私聊
@@ -102,7 +107,7 @@ export default class Bot {
           group_id,
           sender: { nickname, card, user_id },
           raw_message
-        } = request
+        } = message
         console.log(`[${this.bot_name}][${group_id}][${card || nickname}(${user_id})]: ${raw_message}`)
         this.plugins?.forEach(async plugin => {
           // console.log(plugin.name, plugin.process(raw_message))

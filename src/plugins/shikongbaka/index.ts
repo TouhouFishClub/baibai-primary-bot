@@ -1,4 +1,5 @@
 import Plugin, { Rule } from '@baibai/core/Plugin'
+import WebSocket, { RawData } from 'ws'
 
 export default class ShikongBaka extends Plugin {
   constructor() {
@@ -7,7 +8,8 @@ export default class ShikongBaka extends Plugin {
     const type = 'object'
     super(name, rule, type);
   }
-  entry(context: any) {
+
+  entry(context: string | MessageSegment[], ws: WebSocket): string | MessageSegment[] | Promise<string | MessageSegment[]> {
     return 'baka'
   }
 }

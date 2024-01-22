@@ -23,12 +23,11 @@ export interface BotConfig {
 
 export default class Bot {
   private config: BotConfig
-  private wsClient: WebSocket | null
+  private wsClient?: WebSocket
   private plugins: Plugin[] = []
 
   constructor(config: BotConfig) {
     this.config = config
-    this.wsClient = null
   }
 
   get bot_name() {
@@ -123,7 +122,7 @@ export default class Bot {
           // console.log(plugin.name, plugin.process(raw_message))
           let data = plugin.type === 'string' ? rawMsg : objMsg
           if(plugin.process(data) && plugin.isAllowed(group_id)) {
-            const res = await plugin.entry(data)
+            const res = await plugin.entry(data, this.wsClient as WebSocket)
             console.log(`[will send] ${res}`)
             this.sendMsg(res, group_id)
           }

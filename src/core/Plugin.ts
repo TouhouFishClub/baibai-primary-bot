@@ -1,3 +1,5 @@
+import WebSocket, { RawData } from 'ws'
+
 export type Rule = string | RegExp
 
 export default abstract class Plugin {
@@ -51,5 +53,5 @@ export default abstract class Plugin {
     })
   }
 
-  abstract entry(context: string | MessageSegment[]) : string | MessageSegment[] | Promise<string | MessageSegment[]>
+  abstract entry(context: string | MessageSegment[], ws: WebSocket) : string | MessageSegment[] | Promise<string | MessageSegment[]>
 }

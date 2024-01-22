@@ -1,9 +1,10 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import WebSocket, { RawData } from 'ws'
+import http, {IncomingMessage} from 'node:http'
 import Plugin from '@baibai/core/Plugin'
 import { messageSegmentsToString, stringToMessageSegments } from '@baibai/utils/msgTranslate'
-import * as http from '@baibai/utils/httpRequest'
+import * as httpRequest from '@baibai/utils/httpRequest'
 
 interface ReceiveConfig {
   method: 'ws' | 'reverse_ws';  // 正向ws、反向ws
@@ -78,7 +79,7 @@ export default class Bot {
     })
   }
 
-  private handleRawData(raw: RawData) {
+  handleRawData(raw: RawData) {
     const data: ActionRequest = JSON.parse(raw.toString()), { post_type } = data;
     switch (post_type) {
       case "meta_event":
@@ -137,7 +138,7 @@ export default class Bot {
     switch(this.config.send.method){
       case 'http':
         // http发送
-        http.sendGroupMsg(this.config.send.url as string, willSendMsg, group_id)
+        httpRequest.sendGroupMsg(this.config.send.url as string, willSendMsg, group_id)
         break
       case 'same':
         // 与接受方式一致
@@ -162,6 +163,11 @@ export default class Bot {
       default:
         console.error(`[${this.bot_name}] 未知的接收方法: ${this.config.receive.method}`)
     }
+  }
+
+  initReverseWS(ws: WebSocket) {
+    this.wsClient = ws
+    this.autoLoadPlugins()
   }
 
   stop() {

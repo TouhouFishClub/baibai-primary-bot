@@ -3,6 +3,7 @@ import path from 'node:path'
 import WebSocket, { RawData } from 'ws'
 import Plugin from '@baibai/core/Plugin'
 import { messageSegmentsToString, stringToMessageSegments } from '@baibai/utils/msgTranslate'
+import * as http from '@baibai/utils/httpRequest'
 
 interface ReceiveConfig {
   method: 'ws' | 'reverse_ws';  // 正向ws、反向ws
@@ -114,26 +115,24 @@ export default class Bot {
           if(plugin.process(raw_message) && plugin.isAllowed(group_id)) {
             const res = await plugin.entry(raw_message)
             console.log(`[will send] ${res}`)
-            // this.sendMsg(res)
+            this.sendMsg(res, group_id)
           }
         })
         break
     }
   }
 
-  private sendMsg(msg: string | MessageSegment[]) {
-    let sendMsg: MessageSegment[] = []
-    if(typeof msg === 'string') {
-      sendMsg = [{ type: 'text', data: { text: msg } }]
-    } else {
-      sendMsg = msg
-    }
+  private sendMsg(msg: string | MessageSegment[], group_id: number) {
+    let willSendMsg: MessageSegment[] = typeof msg === 'string' ? stringToMessageSegments(msg) : msg
+
     switch(this.config.send.method){
       case 'http':
         // http发送
+        http.sendGroupMsg(this.config.send.url as string, willSendMsg, group_id)
         break
       case 'same':
         // 与接受方式一致
+        console.log('暂未实现ws发送')
         break
     }
   }

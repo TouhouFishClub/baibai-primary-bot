@@ -93,12 +93,12 @@ export default class Bot {
     }
   }
 
-  private handleMsg(message: Message) {
+  private handleMsg(msg: Message) {
     // if(this.bot_name === "PORT-30005") {
     //   console.log(`====\n\nmessage:\n${JSON.stringify(message.message, null, 2)}\n\nraw_message:\n${message.raw_message}\n\nmessageSegmentsToString(${message.raw_message == messageSegmentsToString(message.message as MessageSegment[]) ? '\x1b[32mTRUE\x1b[0m' : '\x1b[31mFALSE\x1b[0m'}):\n${messageSegmentsToString(message.message as MessageSegment[])}\n\nstringToMessageSegments(${JSON.stringify(message.message) == JSON.stringify(stringToMessageSegments(message.raw_message)) ? '\x1b[32mTRUE\x1b[0m' : '\x1b[31mFALSE\x1b[0m'}):\n${JSON.stringify(stringToMessageSegments(message.raw_message), null, 2)}\n\n====`)
     // }
 
-    const { message_type } = message
+    const { message_type } = msg
     switch(message_type) {
       case "private":
         // 暂时不接入私聊
@@ -107,13 +107,23 @@ export default class Bot {
         const {
           group_id,
           sender: { nickname, card, user_id },
-          raw_message
-        } = message
-        console.log(`[${this.bot_name}][${group_id}][${card || nickname}(${user_id})]: ${raw_message}`)
+          raw_message,
+          message
+        } = msg
+        let rawMsg: string, objMsg: MessageSegment[]
+        if(typeof message == 'string') {
+          rawMsg = message
+          objMsg = stringToMessageSegments(message)
+        } else {
+          rawMsg = messageSegmentsToString(message)
+          objMsg = message
+        }
+        console.log(`[${this.bot_name}][${group_id}][${card || nickname}(${user_id})]: ${rawMsg}`)
         this.plugins?.forEach(async plugin => {
           // console.log(plugin.name, plugin.process(raw_message))
-          if(plugin.process(raw_message) && plugin.isAllowed(group_id)) {
-            const res = await plugin.entry(raw_message)
+          let data = plugin.type === 'string' ? rawMsg : objMsg
+          if(plugin.process(data) && plugin.isAllowed(group_id)) {
+            const res = await plugin.entry(data)
             console.log(`[will send] ${res}`)
             this.sendMsg(res, group_id)
           }
